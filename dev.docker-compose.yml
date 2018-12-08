@@ -1,0 +1,27 @@
+version: '3.0'
+services:
+  db:
+    container_name: contact-list-database
+    restart: always
+    image: mongo:3.4
+    volumes:
+      - ./data:/data/db
+      - ./dump:/var/opt/dump
+    ports:
+      - 27017:27017
+  
+  web:
+    container_name: contact-list-application
+    restart: always
+    build:
+      context: .
+      dockerfile: dev.Dockerfile
+    image: contact-list:dev
+    volumes:
+      - ./src:/var/opt/contact-list/src
+    ports:
+      - 30100:3000
+    environment:
+      - PORT=3000
+    links:
+      - db:mongo
